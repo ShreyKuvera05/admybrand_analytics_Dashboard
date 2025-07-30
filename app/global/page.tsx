@@ -101,9 +101,9 @@ export default function GlobalPage() {
       </div>
 
       {/* Interactive World Map */}
-      {/* <div className="mb-8">
+      <div className="mb-8">
         <InteractiveWorldMap />
-      </div> */}
+      </div>
 
       {/* Traditional Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
