@@ -1,33 +1,43 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useTheme } from "next-themes"
-import { motion } from "framer-motion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { TrendingUp, TrendingDown, Users, DollarSign, ZoomIn, ZoomOut, RotateCcw } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  TrendingUp,
+  TrendingDown,
+  Users,
+  DollarSign,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface MapDataPoint {
-  id: string
-  city: string
-  country: string
-  x: number // Percentage position on map (0-100)
-  y: number // Percentage position on map (0-100)
-  users: number
-  conversions: number
-  revenue: number
-  conversionRate: number
-  growth: number
-  flag: string
+  id: string;
+  city: string;
+  country: string;
+  x: number; // Percentage position on map (0-100)
+  y: number; // Percentage position on map (0-100)
+  users: number;
+  conversions: number;
+  revenue: number;
+  conversionRate: number;
+  growth: number;
+  flag: string;
 }
 
 export function InteractiveWorldMap() {
-  const { theme } = useTheme()
-  const [mapData, setMapData] = useState<MapDataPoint[]>([])
-  const [selectedMetric, setSelectedMetric] = useState<"users" | "conversions" | "revenue" | "conversionRate">("users")
-  const [hoveredCity, setHoveredCity] = useState<string | null>(null)
-  const [zoomLevel, setZoomLevel] = useState(1)
+  const { theme } = useTheme();
+  const [mapData, setMapData] = useState<MapDataPoint[]>([]);
+  const [selectedMetric, setSelectedMetric] = useState<
+    "users" | "conversions" | "revenue" | "conversionRate"
+  >("users");
+  const [hoveredCity, setHoveredCity] = useState<string | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   // Mock data for major cities worldwide with approximate positions on world map
   useEffect(() => {
@@ -162,10 +172,10 @@ export function InteractiveWorldMap() {
         growth: 14.6,
         flag: "🇧🇷",
       },
-    ]
+    ];
 
-    setMapData(cities)
-  }, [])
+    setMapData(cities);
+  }, []);
 
   // Simulate real-time updates
   useEffect(() => {
@@ -176,14 +186,17 @@ export function InteractiveWorldMap() {
           users: city.users + Math.floor(Math.random() * 100),
           conversions: city.conversions + Math.floor(Math.random() * 10),
           revenue: city.revenue + Math.floor(Math.random() * 1000),
-          conversionRate: +(city.conversionRate + (Math.random() - 0.5) * 0.5).toFixed(1),
+          conversionRate: +(
+            city.conversionRate +
+            (Math.random() - 0.5) * 0.5
+          ).toFixed(1),
           growth: +(city.growth + (Math.random() - 0.5) * 2).toFixed(1),
-        })),
-      )
-    }, 10000)
+        }))
+      );
+    }, 10000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   const getMarkerSize = (value: number, metric: string) => {
     const maxValues = {
@@ -191,12 +204,15 @@ export function InteractiveWorldMap() {
       conversions: 3000,
       revenue: 300000,
       conversionRate: 10,
-    }
-    const minSize = 12
-    const maxSize = 32
-    const normalizedValue = Math.min(value / maxValues[metric as keyof typeof maxValues], 1)
-    return (minSize + (maxSize - minSize) * normalizedValue) * zoomLevel
-  }
+    };
+    const minSize = 12;
+    const maxSize = 32;
+    const normalizedValue = Math.min(
+      value / maxValues[metric as keyof typeof maxValues],
+      1
+    );
+    return (minSize + (maxSize - minSize) * normalizedValue) * zoomLevel;
+  };
 
   const getMarkerColor = (value: number, metric: string) => {
     const maxValues = {
@@ -204,55 +220,58 @@ export function InteractiveWorldMap() {
       conversions: 3000,
       revenue: 300000,
       conversionRate: 10,
-    }
-    const normalizedValue = Math.min(value / maxValues[metric as keyof typeof maxValues], 1)
+    };
+    const normalizedValue = Math.min(
+      value / maxValues[metric as keyof typeof maxValues],
+      1
+    );
 
     if (theme === "dark") {
       // Neon colors for dark theme
-      if (normalizedValue > 0.8) return "#00f5ff" // Neon cyan
-      if (normalizedValue > 0.6) return "#8b5cf6" // Neon purple
-      if (normalizedValue > 0.4) return "#ec4899" // Neon pink
-      if (normalizedValue > 0.2) return "#10b981" // Neon green
-      return "#f59e0b" // Neon orange
+      if (normalizedValue > 0.8) return "#00f5ff"; // Neon cyan
+      if (normalizedValue > 0.6) return "#8b5cf6"; // Neon purple
+      if (normalizedValue > 0.4) return "#ec4899"; // Neon pink
+      if (normalizedValue > 0.2) return "#10b981"; // Neon green
+      return "#f59e0b"; // Neon orange
     } else {
       // Vibrant colors for light theme
-      if (normalizedValue > 0.8) return "#0891b2" // Dark cyan
-      if (normalizedValue > 0.6) return "#7c3aed" // Dark purple
-      if (normalizedValue > 0.4) return "#db2777" // Dark pink
-      if (normalizedValue > 0.2) return "#059669" // Dark green
-      return "#d97706" // Dark orange
+      if (normalizedValue > 0.8) return "#0891b2"; // Dark cyan
+      if (normalizedValue > 0.6) return "#7c3aed"; // Dark purple
+      if (normalizedValue > 0.4) return "#db2777"; // Dark pink
+      if (normalizedValue > 0.2) return "#059669"; // Dark green
+      return "#d97706"; // Dark orange
     }
-  }
+  };
 
   const formatValue = (value: number, metric: string) => {
     switch (metric) {
       case "users":
-        return value.toLocaleString()
+        return value.toLocaleString();
       case "conversions":
-        return value.toLocaleString()
+        return value.toLocaleString();
       case "revenue":
-        return `$${value.toLocaleString()}`
+        return `$${value.toLocaleString()}`;
       case "conversionRate":
-        return `${value}%`
+        return `${value}%`;
       default:
-        return value.toString()
+        return value.toString();
     }
-  }
+  };
 
   const getMetricIcon = (metric: string) => {
     switch (metric) {
       case "users":
-        return <Users className="w-4 h-4" />
+        return <Users className="w-4 h-4" />;
       case "conversions":
-        return <TrendingUp className="w-4 h-4" />
+        return <TrendingUp className="w-4 h-4" />;
       case "revenue":
-        return <DollarSign className="w-4 h-4" />
+        return <DollarSign className="w-4 h-4" />;
       case "conversionRate":
-        return <TrendingUp className="w-4 h-4" />
+        return <TrendingUp className="w-4 h-4" />;
       default:
-        return <Users className="w-4 h-4" />
+        return <Users className="w-4 h-4" />;
     }
-  }
+  };
 
   return (
     <motion.div
@@ -263,9 +282,13 @@ export function InteractiveWorldMap() {
       <Card className="bg-white/80 dark:bg-black/20 backdrop-blur-xl border-gray-200 dark:border-white/10 shadow-light-lg dark:shadow-none">
         <CardHeader>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <CardTitle className="text-gray-900 dark:text-white">Interactive Global Map</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-white">
+              Interactive Global Map
+            </CardTitle>
             <div className="flex flex-wrap gap-2">
-              {(["users", "conversions", "revenue", "conversionRate"] as const).map((metric) => (
+              {(
+                ["users", "conversions", "revenue", "conversionRate"] as const
+              ).map((metric) => (
                 <button
                   key={metric}
                   onClick={() => setSelectedMetric(metric)}
@@ -277,7 +300,9 @@ export function InteractiveWorldMap() {
                 >
                   <div className="flex items-center space-x-1">
                     {getMetricIcon(metric)}
-                    <span className="capitalize">{metric === "conversionRate" ? "Conv. Rate" : metric}</span>
+                    <span className="capitalize">
+                      {metric === "conversionRate" ? "Conv. Rate" : metric}
+                    </span>
                   </div>
                 </button>
               ))}
@@ -313,7 +338,9 @@ export function InteractiveWorldMap() {
                 <RotateCcw className="w-4 h-4" />
               </Button>
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Zoom: {Math.round(zoomLevel * 100)}%</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Zoom: {Math.round(zoomLevel * 100)}%
+            </div>
           </div>
 
           {/* World Map Container */}
@@ -372,10 +399,22 @@ export function InteractiveWorldMap() {
                 <div
                   className="rounded-full border-2 border-white dark:border-gray-800 shadow-lg transition-all duration-300"
                   style={{
-                    width: `${getMarkerSize(city[selectedMetric], selectedMetric)}px`,
-                    height: `${getMarkerSize(city[selectedMetric], selectedMetric)}px`,
-                    backgroundColor: getMarkerColor(city[selectedMetric], selectedMetric),
-                    boxShadow: `0 0 20px ${getMarkerColor(city[selectedMetric], selectedMetric)}40`,
+                    width: `${getMarkerSize(
+                      city[selectedMetric],
+                      selectedMetric
+                    )}px`,
+                    height: `${getMarkerSize(
+                      city[selectedMetric],
+                      selectedMetric
+                    )}px`,
+                    backgroundColor: getMarkerColor(
+                      city[selectedMetric],
+                      selectedMetric
+                    ),
+                    boxShadow: `0 0 20px ${getMarkerColor(
+                      city[selectedMetric],
+                      selectedMetric
+                    )}40`,
                   }}
                 />
 
@@ -383,7 +422,10 @@ export function InteractiveWorldMap() {
                 <div
                   className="absolute inset-0 rounded-full animate-ping opacity-30"
                   style={{
-                    backgroundColor: getMarkerColor(city[selectedMetric], selectedMetric),
+                    backgroundColor: getMarkerColor(
+                      city[selectedMetric],
+                      selectedMetric
+                    ),
                   }}
                 />
 
@@ -398,37 +440,51 @@ export function InteractiveWorldMap() {
                       <div className="flex items-center space-x-2 mb-2">
                         <span className="text-2xl">{city.flag}</span>
                         <div>
-                          <h3 className="font-bold text-gray-900 dark:text-white text-sm">{city.city}</h3>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">{city.country}</p>
+                          <h3 className="font-bold text-gray-900 dark:text-white text-sm">
+                            {city.city}
+                          </h3>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">
+                            {city.country}
+                          </p>
                         </div>
                       </div>
                       <div className="space-y-1 text-xs">
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600 dark:text-gray-400">Users:</span>
+                          <span className="text-gray-600 dark:text-gray-400">
+                            Users:
+                          </span>
                           <span className="font-semibold text-blue-600 dark:text-blue-400">
                             {city.users.toLocaleString()}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600 dark:text-gray-400">Conversions:</span>
+                          <span className="text-gray-600 dark:text-gray-400">
+                            Conversions:
+                          </span>
                           <span className="font-semibold text-green-600 dark:text-green-400">
                             {city.conversions.toLocaleString()}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600 dark:text-gray-400">Revenue:</span>
+                          <span className="text-gray-600 dark:text-gray-400">
+                            Revenue:
+                          </span>
                           <span className="font-semibold text-purple-600 dark:text-purple-400">
                             ${city.revenue.toLocaleString()}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600 dark:text-gray-400">Conv. Rate:</span>
+                          <span className="text-gray-600 dark:text-gray-400">
+                            Conv. Rate:
+                          </span>
                           <span className="font-semibold text-orange-600 dark:text-orange-400">
                             {city.conversionRate}%
                           </span>
                         </div>
                         <div className="flex justify-between items-center pt-1 border-t border-gray-200 dark:border-gray-600">
-                          <span className="text-gray-600 dark:text-gray-400">Growth:</span>
+                          <span className="text-gray-600 dark:text-gray-400">
+                            Growth:
+                          </span>
                           <div className="flex items-center space-x-1">
                             {city.growth > 0 ? (
                               <TrendingUp className="w-3 h-3 text-green-500" />
@@ -463,9 +519,13 @@ export function InteractiveWorldMap() {
                   Showing:{" "}
                   {selectedMetric === "conversionRate"
                     ? "Conversion Rate"
-                    : selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)}
+                    : selectedMetric.charAt(0).toUpperCase() +
+                      selectedMetric.slice(1)}
                 </span>
-                <Badge variant="outline" className="bg-white/70 dark:bg-white/10 border-gray-200 dark:border-white/20">
+                <Badge
+                  variant="outline"
+                  className="bg-white/70 dark:bg-white/10 border-gray-200 dark:border-white/20"
+                >
                   {mapData.length} locations
                 </Badge>
               </div>
@@ -492,5 +552,5 @@ export function InteractiveWorldMap() {
         </CardContent>
       </Card>
     </motion.div>
-  )
+  );
 }
