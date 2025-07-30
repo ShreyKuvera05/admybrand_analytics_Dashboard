@@ -253,8 +253,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 If you have any questions or need help with the dashboard:
 
 - **Create an issue** on GitHub
-- **Email**: your-email@example.com
-- **Twitter**: @yourusername
+- **Email**: shrey.kuvera@gmail.com
+
 
 ---
 
