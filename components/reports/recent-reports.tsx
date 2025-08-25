@@ -1,39 +1,41 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { useToast } from "@/hooks/use-toast"
-import { Download, FileText, Calendar, Clock } from "lucide-react"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { Download, FileText, Calendar, Clock } from "lucide-react";
 
 interface ReportData {
-  id: string
-  name: string
-  date: string
-  type: "Performance" | "Audience" | "Campaign"
-  status: "Ready" | "Processing"
-  format: "PDF" | "CSV" | "JSON"
-  data?: any
+  id: string;
+  name: string;
+  date: string;
+  type: "Performance" | "Audience" | "Campaign";
+  status: "Ready" | "Processing";
+  format: "PDF" | "CSV" | "JSON";
+  data?: any;
 }
 
 interface RecentReport {
-  id: string
-  name: string
-  type: string
-  date: string
-  status: string
+  id: string;
+  name: string;
+  type: string;
+  date: string;
+  status: string;
 }
 
 interface RecentReportsProps {
-  reports: ReportData[]
-  onDeleteReport: (id: string) => void
+  reports: ReportData[];
+  onDeleteReport: (id: string) => void;
 }
 
 export function RecentReports({ reports, onDeleteReport }: RecentReportsProps) {
-  const { toast } = useToast()
-  const [downloadingReports, setDownloadingReports] = useState<Set<string>>(new Set())
+  const { toast } = useToast();
+  const [downloadingReports, setDownloadingReports] = useState<Set<string>>(
+    new Set()
+  );
 
   const generateMockData = (type: string) => {
     const baseData = {
@@ -41,7 +43,7 @@ export function RecentReports({ reports, onDeleteReport }: RecentReportsProps) {
       period: "Last 30 Days",
       summary: {},
       details: {},
-    }
+    };
 
     switch (type) {
       case "Performance":
@@ -56,7 +58,9 @@ export function RecentReports({ reports, onDeleteReport }: RecentReportsProps) {
           },
           details: {
             dailyMetrics: Array.from({ length: 30 }, (_, i) => ({
-              date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+              date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split("T")[0],
               revenue: Math.floor(Math.random() * 5000) + 2000,
               conversions: Math.floor(Math.random() * 100) + 50,
               clicks: Math.floor(Math.random() * 2000) + 1000,
@@ -68,7 +72,7 @@ export function RecentReports({ reports, onDeleteReport }: RecentReportsProps) {
               { name: "Holiday Special", revenue: "$28,904", roi: "156%" },
             ],
           },
-        }
+        };
 
       case "Audience":
         return {
@@ -103,7 +107,7 @@ export function RecentReports({ reports, onDeleteReport }: RecentReportsProps) {
               ],
             },
           },
-        }
+        };
 
       case "Campaign":
         return {
@@ -153,101 +157,121 @@ export function RecentReports({ reports, onDeleteReport }: RecentReportsProps) {
               ],
             },
           },
-        }
+        };
 
       default:
-        return baseData
+        return baseData;
     }
-  }
+  };
 
-  const generateFile = (reportData: any, reportName: string, format: "PDF" | "CSV" | "JSON") => {
+  const generateFile = (
+    reportData: any,
+    reportName: string,
+    format: "PDF" | "CSV" | "JSON"
+  ) => {
     switch (format) {
       case "PDF":
         // Create a simple but valid PDF structure
         const createPDFContent = () => {
-          const lines = []
+          const lines = [];
 
           // Header
-          lines.push(`${reportName}`)
+          lines.push(`${reportName}`);
           lines.push(
             `Generated on ${new Date().toLocaleDateString("en-US", {
               weekday: "long",
               year: "numeric",
               month: "long",
               day: "numeric",
-            })}`,
-          )
-          lines.push(`Period: ${reportData.period}`)
-          lines.push("")
+            })}`
+          );
+          lines.push(`Period: ${reportData.period}`);
+          lines.push("");
 
           // Summary
-          lines.push("EXECUTIVE SUMMARY")
-          lines.push("=".repeat(50))
+          lines.push("EXECUTIVE SUMMARY");
+          lines.push("=".repeat(50));
           Object.entries(reportData.summary).forEach(([key, value]) => {
-            const metricName = key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
-            lines.push(`${metricName}: ${value}`)
-          })
-          lines.push("")
+            const metricName = key
+              .replace(/([A-Z])/g, " $1")
+              .replace(/^./, str => str.toUpperCase());
+            lines.push(`${metricName}: ${value}`);
+          });
+          lines.push("");
 
           // Details based on report type
           if (reportData.details.dailyMetrics) {
-            lines.push("DAILY PERFORMANCE (Last 7 Days)")
-            lines.push("=".repeat(50))
-            lines.push("Date\t\tRevenue\t\tConversions\tClicks\t\tImpressions")
-            lines.push("-".repeat(80))
+            lines.push("DAILY PERFORMANCE (Last 7 Days)");
+            lines.push("=".repeat(50));
+            lines.push("Date\t\tRevenue\t\tConversions\tClicks\t\tImpressions");
+            lines.push("-".repeat(80));
             reportData.details.dailyMetrics.slice(-7).forEach((day: any) => {
               lines.push(
-                `${day.date}\t$${day.revenue.toLocaleString()}\t\t${day.conversions}\t\t${day.clicks.toLocaleString()}\t\t${day.impressions.toLocaleString()}`,
-              )
-            })
-            lines.push("")
+                `${day.date}\t$${day.revenue.toLocaleString()}\t\t${
+                  day.conversions
+                }\t\t${day.clicks.toLocaleString()}\t\t${day.impressions.toLocaleString()}`
+              );
+            });
+            lines.push("");
           }
 
           if (reportData.details.campaigns) {
-            lines.push("CAMPAIGN PERFORMANCE")
-            lines.push("=".repeat(50))
-            lines.push("Campaign\t\t\tStatus\t\tBudget\t\tSpent\t\tROI")
-            lines.push("-".repeat(80))
+            lines.push("CAMPAIGN PERFORMANCE");
+            lines.push("=".repeat(50));
+            lines.push("Campaign\t\t\tStatus\t\tBudget\t\tSpent\t\tROI");
+            lines.push("-".repeat(80));
             reportData.details.campaigns.forEach((campaign: any) => {
               lines.push(
-                `${campaign.name}\t\t${campaign.status}\t\t${campaign.budget}\t${campaign.spent}\t${campaign.roi}`,
-              )
-            })
-            lines.push("")
+                `${campaign.name}\t\t${campaign.status}\t\t${campaign.budget}\t${campaign.spent}\t${campaign.roi}`
+              );
+            });
+            lines.push("");
           }
 
           if (reportData.details.demographics) {
-            lines.push("DEMOGRAPHICS BREAKDOWN")
-            lines.push("=".repeat(50))
-            lines.push("Age Range\t\tUsers\t\tPercentage")
-            lines.push("-".repeat(50))
+            lines.push("DEMOGRAPHICS BREAKDOWN");
+            lines.push("=".repeat(50));
+            lines.push("Age Range\t\tUsers\t\tPercentage");
+            lines.push("-".repeat(50));
             reportData.details.demographics.ageGroups.forEach((group: any) => {
-              lines.push(`${group.range}\t\t\t${group.users.toLocaleString()}\t\t${group.percentage}%`)
-            })
-            lines.push("")
+              lines.push(
+                `${group.range}\t\t\t${group.users.toLocaleString()}\t\t${
+                  group.percentage
+                }%`
+              );
+            });
+            lines.push("");
 
-            lines.push("TOP LOCATIONS")
-            lines.push("-".repeat(50))
-            lines.push("Country\t\t\tUsers\t\tPercentage")
-            lines.push("-".repeat(50))
-            reportData.details.demographics.locations.forEach((location: any) => {
-              lines.push(`${location.country}\t\t${location.users.toLocaleString()}\t\t${location.percentage}%`)
-            })
-            lines.push("")
+            lines.push("TOP LOCATIONS");
+            lines.push("-".repeat(50));
+            lines.push("Country\t\t\tUsers\t\tPercentage");
+            lines.push("-".repeat(50));
+            reportData.details.demographics.locations.forEach(
+              (location: any) => {
+                lines.push(
+                  `${
+                    location.country
+                  }\t\t${location.users.toLocaleString()}\t\t${
+                    location.percentage
+                  }%`
+                );
+              }
+            );
+            lines.push("");
           }
 
           // Footer
-          lines.push("")
-          lines.push("=".repeat(80))
-          lines.push("ADmyBRAND Analytics Dashboard")
-          lines.push("This report contains confidential business information")
-          lines.push("Generated automatically")
+          lines.push("");
+          lines.push("=".repeat(80));
+          lines.push("analytics Analytics Dashboard");
+          lines.push("This report contains confidential business information");
+          lines.push("Generated automatically");
 
-          return lines.join("\n")
-        }
+          return lines.join("\n");
+        };
 
         // Create a simple PDF-like format using plain text
-        const pdfContent = createPDFContent()
+        const pdfContent = createPDFContent();
 
         // Create a basic PDF structure
         const formattedContent = `%PDF-1.4
@@ -298,8 +322,10 @@ BT
 0 -20 Td
 ${Object.entries(reportData.summary)
   .map(([key, value]) => {
-    const metricName = key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
-    return `(${metricName}: ${value}) Tj 0 -15 Td`
+    const metricName = key
+      .replace(/([A-Z])/g, " $1")
+      .replace(/^./, str => str.toUpperCase());
+    return `(${metricName}: ${value}) Tj 0 -15 Td`;
   })
   .join("\n")}
 ET
@@ -329,63 +355,65 @@ trailer
 >>
 startxref
 456
-%%EOF`
+%%EOF`;
 
-        return new Blob([formattedContent], { type: "application/pdf" })
+        return new Blob([formattedContent], { type: "application/pdf" });
 
       case "CSV":
-        let csvContent = ""
+        let csvContent = "";
 
         // Header information
-        csvContent += `"${reportName}"\n`
-        csvContent += `"Generated","${new Date().toLocaleDateString()}"\n`
-        csvContent += `"Period","${reportData.period}"\n`
-        csvContent += `\n`
+        csvContent += `"${reportName}"\n`;
+        csvContent += `"Generated","${new Date().toLocaleDateString()}"\n`;
+        csvContent += `"Period","${reportData.period}"\n`;
+        csvContent += `\n`;
 
         // Summary metrics in proper CSV format
-        csvContent += `"SUMMARY METRICS"\n`
-        csvContent += `"Metric","Value"\n`
+        csvContent += `"SUMMARY METRICS"\n`;
+        csvContent += `"Metric","Value"\n`;
         Object.entries(reportData.summary).forEach(([key, value]) => {
-          const metricName = key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
-          csvContent += `"${metricName}","${value}"\n`
-        })
-        csvContent += `\n`
+          const metricName = key
+            .replace(/([A-Z])/g, " $1")
+            .replace(/^./, str => str.toUpperCase());
+          csvContent += `"${metricName}","${value}"\n`;
+        });
+        csvContent += `\n`;
 
         // Add detailed data based on report type
         if (reportData.details.dailyMetrics) {
-          csvContent += `"DAILY PERFORMANCE"\n`
-          csvContent += `"Date","Revenue","Conversions","Clicks","Impressions"\n`
+          csvContent += `"DAILY PERFORMANCE"\n`;
+          csvContent += `"Date","Revenue","Conversions","Clicks","Impressions"\n`;
           reportData.details.dailyMetrics.forEach((day: any) => {
-            csvContent += `"${day.date}","${day.revenue}","${day.conversions}","${day.clicks}","${day.impressions}"\n`
-          })
-          csvContent += `\n`
+            csvContent += `"${day.date}","${day.revenue}","${day.conversions}","${day.clicks}","${day.impressions}"\n`;
+          });
+          csvContent += `\n`;
         }
 
         if (reportData.details.campaigns) {
-          csvContent += `"CAMPAIGN PERFORMANCE"\n`
-          csvContent += `"Campaign","Status","Budget","Spent","Impressions","Clicks","Conversions","CTR","CPC","ROI"\n`
+          csvContent += `"CAMPAIGN PERFORMANCE"\n`;
+          csvContent += `"Campaign","Status","Budget","Spent","Impressions","Clicks","Conversions","CTR","CPC","ROI"\n`;
           reportData.details.campaigns.forEach((campaign: any) => {
-            csvContent += `"${campaign.name}","${campaign.status}","${campaign.budget}","${campaign.spent}","${campaign.impressions}","${campaign.clicks}","${campaign.conversions}","${campaign.ctr}","${campaign.cpc}","${campaign.roi}"\n`
-          })
-          csvContent += `\n`
+            csvContent += `"${campaign.name}","${campaign.status}","${campaign.budget}","${campaign.spent}","${campaign.impressions}","${campaign.clicks}","${campaign.conversions}","${campaign.ctr}","${campaign.cpc}","${campaign.roi}"\n`;
+          });
+          csvContent += `\n`;
         }
 
         if (reportData.details.demographics) {
-          csvContent += `"AGE DEMOGRAPHICS"\n`
-          csvContent += `"Age Range","Users","Percentage"\n`
+          csvContent += `"AGE DEMOGRAPHICS"\n`;
+          csvContent += `"Age Range","Users","Percentage"\n`;
           reportData.details.demographics.ageGroups.forEach((group: any) => {
-            csvContent += `"${group.range}","${group.users}","${group.percentage}%"\n`
-          })
-          csvContent += `\n`
+            csvContent += `"${group.range}","${group.users}","${group.percentage}%"\n`;
+          });
+          csvContent += `\n`;
 
-          csvContent += `"TOP LOCATIONS"\n`
-          csvContent += `"Country","Users","Percentage"\n`
+          csvContent += `"TOP LOCATIONS"\n`;
+          csvContent += `"Country","Users","Percentage"\n`;
           reportData.details.demographics.locations.forEach((location: any) => {
-            csvContent += `"${location.country}","${location.users}","${location.percentage}%"\n`
-          })
+            csvContent += `"${location.country}","${location.users}","${location.percentage}%"\n`;
+          });
         }
 
-        return new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+        return new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
       case "JSON":
         const structuredData = {
@@ -397,65 +425,72 @@ startxref
           summary: reportData.summary,
           details: reportData.details,
           metadata: {
-            totalDataPoints: reportData.details.dailyMetrics ? reportData.details.dailyMetrics.length : 0,
+            totalDataPoints: reportData.details.dailyMetrics
+              ? reportData.details.dailyMetrics.length
+              : 0,
             reportType: reportData.details.campaigns
               ? "Campaign"
               : reportData.details.demographics
-                ? "Audience"
-                : "Performance",
-            generatedBy: "ADmyBRAND Analytics Dashboard",
+              ? "Audience"
+              : "Performance",
+            generatedBy: "analytics Analytics Dashboard",
           },
-        }
+        };
 
-        const jsonContent = JSON.stringify(structuredData, null, 2)
-        return new Blob([jsonContent], { type: "application/json;charset=utf-8;" })
+        const jsonContent = JSON.stringify(structuredData, null, 2);
+        return new Blob([jsonContent], {
+          type: "application/json;charset=utf-8;",
+        });
 
       default:
-        return new Blob([], { type: "text/plain" })
+        return new Blob([], { type: "text/plain" });
     }
-  }
+  };
 
   const downloadFile = (blob: Blob, filename: string) => {
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    window.URL.revokeObjectURL(url)
-  }
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
 
-  const handleDownload = async (report: ReportData, format: "PDF" | "CSV" | "JSON") => {
-    setDownloadingReports((prev) => new Set([...prev, `${report.id}-${format}`]))
+  const handleDownload = async (
+    report: ReportData,
+    format: "PDF" | "CSV" | "JSON"
+  ) => {
+    setDownloadingReports(prev => new Set([...prev, `${report.id}-${format}`]));
 
     try {
       // Use existing data or generate new mock data
-      const reportData = report.data || generateMockData(report.type)
-      const blob = generateFile(reportData, report.name, format)
-      const extension = format.toLowerCase()
-      downloadFile(blob, `${report.name}.${extension}`)
+      const reportData = report.data || generateMockData(report.type);
+      const blob = generateFile(reportData, report.name, format);
+      const extension = format.toLowerCase();
+      downloadFile(blob, `${report.name}.${extension}`);
 
       toast({
         title: "Download Started",
         description: `${report.name} (${format}) is being downloaded.`,
         duration: 3000,
-      })
+      });
     } catch (error) {
       toast({
         title: "Download Failed",
         description: "Please try again later.",
         variant: "destructive",
         duration: 3000,
-      })
+      });
     } finally {
-      setDownloadingReports((prev) => {
-        const newSet = new Set(prev)
-        newSet.delete(`${report.id}-${format}`)
-        return newSet
-      })
+      setDownloadingReports(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(`${report.id}-${format}`);
+        return newSet;
+      });
     }
-  }
+  };
 
   const getStatusBadge = (status: string) => {
     return status === "Ready" ? (
@@ -466,17 +501,19 @@ startxref
       <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-500/20 dark:text-yellow-400 dark:border-yellow-500/30 text-xs">
         Processing
       </Badge>
-    )
-  }
+    );
+  };
 
   const getTypeColor = (type: string) => {
     const colors = {
       Performance: "text-blue-600 dark:text-blue-400",
       Audience: "text-green-600 dark:text-green-400",
       Campaign: "text-purple-600 dark:text-purple-400",
-    }
-    return colors[type as keyof typeof colors] || "text-gray-600 dark:text-gray-400"
-  }
+    };
+    return (
+      colors[type as keyof typeof colors] || "text-gray-600 dark:text-gray-400"
+    );
+  };
 
   return (
     <Card className="bg-white/80 dark:bg-black/20 backdrop-blur-xl border-gray-200 dark:border-white/10 shadow-light-lg dark:shadow-none">
@@ -490,8 +527,12 @@ startxref
         {reports.length === 0 ? (
           <div className="text-center py-8">
             <FileText className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-600 dark:text-gray-400">No reports generated yet</p>
-            <p className="text-gray-500 dark:text-gray-500 text-sm">Generate your first report above</p>
+            <p className="text-gray-600 dark:text-gray-400">
+              No reports generated yet
+            </p>
+            <p className="text-gray-500 dark:text-gray-500 text-sm">
+              Generate your first report above
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -506,10 +547,14 @@ startxref
                 <div className="flex items-center space-x-3">
                   <FileText className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   <div>
-                    <p className="text-gray-900 dark:text-white font-medium">{report.name}</p>
+                    <p className="text-gray-900 dark:text-white font-medium">
+                      {report.name}
+                    </p>
                     <div className="flex items-center space-x-2 mt-1">
                       <Calendar className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-                      <p className="text-gray-600 dark:text-gray-400 text-xs">{report.date}</p>
+                      <p className="text-gray-600 dark:text-gray-400 text-xs">
+                        {report.date}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -583,5 +628,5 @@ startxref
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

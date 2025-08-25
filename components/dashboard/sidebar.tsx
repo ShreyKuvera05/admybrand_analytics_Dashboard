@@ -1,15 +1,26 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { BarChart3, Users, TrendingUp, Globe, Settings, Home, Activity, Target, X, FileText } from "lucide-react"
-import { cn } from "@/lib/utils"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
+import { motion } from "framer-motion";
+import {
+  BarChart3,
+  Users,
+  TrendingUp,
+  Globe,
+  Settings,
+  Home,
+  Activity,
+  Target,
+  X,
+  FileText,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 interface SidebarProps {
-  open: boolean
-  setOpen: (open: boolean) => void
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }
 
 const navigation = [
@@ -22,10 +33,10 @@ const navigation = [
   { name: "Real-time", href: "/realtime", icon: Activity },
   { name: "Global", href: "/global", icon: Globe },
   { name: "Settings", href: "/settings", icon: Settings },
-]
+];
 
 export function Sidebar({ open, setOpen }: SidebarProps) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <>
@@ -52,11 +63,16 @@ export function Sidebar({ open, setOpen }: SidebarProps) {
         className="fixed inset-y-0 left-0 z-50 w-64 md:hidden"
       >
         <div className="w-full h-full bg-white/95 dark:bg-black/30 backdrop-blur-xl border-r border-gray-200 dark:border-white/10 shadow-light-xl dark:shadow-none">
-          <SidebarContent open={open} setOpen={setOpen} pathname={pathname} isMobile />
+          <SidebarContent
+            open={open}
+            setOpen={setOpen}
+            pathname={pathname}
+            isMobile
+          />
         </div>
       </motion.div>
     </>
-  )
+  );
 }
 
 function SidebarContent({
@@ -65,10 +81,10 @@ function SidebarContent({
   pathname,
   isMobile = false,
 }: {
-  open: boolean
-  setOpen: (open: boolean) => void
-  pathname: string
-  isMobile?: boolean
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  pathname: string;
+  isMobile?: boolean;
 }) {
   return (
     <div className="flex flex-col h-full p-4">
@@ -79,7 +95,7 @@ function SidebarContent({
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <span className="ml-3 text-xl font-bold bg-gradient-to-r from-cyan-500 to-purple-500 bg-clip-text text-transparent">
-            ADmyBRAND
+            analytics
           </span>
         </div>
         {isMobile && (
@@ -96,10 +112,14 @@ function SidebarContent({
 
       {/* Navigation */}
       <nav className="flex-1 space-y-2">
-        {navigation.map((item) => {
-          const isActive = pathname === item.href
+        {navigation.map(item => {
+          const isActive = pathname === item.href;
           return (
-            <Link key={item.name} href={item.href} onClick={() => isMobile && setOpen(false)}>
+            <Link
+              key={item.name}
+              href={item.href}
+              onClick={() => isMobile && setOpen(false)}
+            >
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -107,14 +127,14 @@ function SidebarContent({
                   "flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                   isActive
                     ? "bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30 shadow-light-md dark:shadow-none"
-                    : "text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/70 dark:hover:bg-white/5",
+                    : "text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/70 dark:hover:bg-white/5"
                 )}
               >
                 <item.icon className="w-5 h-5 flex-shrink-0" />
                 <span className="ml-3">{item.name}</span>
               </motion.div>
             </Link>
-          )
+          );
         })}
       </nav>
 
@@ -127,11 +147,13 @@ function SidebarContent({
         <div className="flex items-center">
           <div className="w-8 h-8 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full" />
           <div className="ml-3">
-            <p className="text-sm font-medium text-gray-900 dark:text-white">John Doe</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-white">
+              John Doe
+            </p>
             <p className="text-xs text-gray-600 dark:text-slate-400">Admin</p>
           </div>
         </div>
       </motion.div>
     </div>
-  )
+  );
 }

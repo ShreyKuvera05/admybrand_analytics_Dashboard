@@ -1,73 +1,96 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { useToast } from "@/hooks/use-toast"
-import { Settings, Bell, Shield, Key, Users, Plus, Copy, RefreshCw, Check, UserPlus } from "lucide-react"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Settings,
+  Bell,
+  Shield,
+  Key,
+  Users,
+  Plus,
+  Copy,
+  RefreshCw,
+  Check,
+  UserPlus,
+} from "lucide-react";
 
 export default function SettingsPage() {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [notifications, setNotifications] = useState({
     email: true,
     push: false,
     sms: true,
     marketing: false,
-  })
-  const [apiKeyCopied, setApiKeyCopied] = useState(false)
+  });
+  const [apiKeyCopied, setApiKeyCopied] = useState(false);
 
   const handleNotificationChange = (type: string, value: boolean) => {
-    setNotifications((prev) => ({ ...prev, [type]: value }))
+    setNotifications(prev => ({ ...prev, [type]: value }));
     toast({
       title: "Notification Settings Updated",
-      description: `${type.charAt(0).toUpperCase() + type.slice(1)} notifications ${value ? "enabled" : "disabled"}`,
+      description: `${
+        type.charAt(0).toUpperCase() + type.slice(1)
+      } notifications ${value ? "enabled" : "disabled"}`,
       duration: 2000,
-    })
-  }
+    });
+  };
 
   const copyApiKey = () => {
-    navigator.clipboard.writeText("ak_live_1234567890abcdef")
-    setApiKeyCopied(true)
+    navigator.clipboard.writeText("ak_live_1234567890abcdef");
+    setApiKeyCopied(true);
     toast({
       title: "API Key Copied",
       description: "API key has been copied to clipboard",
       duration: 2000,
-    })
-    setTimeout(() => setApiKeyCopied(false), 2000)
-  }
+    });
+    setTimeout(() => setApiKeyCopied(false), 2000);
+  };
 
   const regenerateApiKey = () => {
     toast({
       title: "API Key Regenerated",
       description: "Your API key has been regenerated successfully",
       duration: 3000,
-    })
-  }
+    });
+  };
 
   const connectService = (service: string) => {
     toast({
       title: `Connect to ${service}`,
       description: `Redirecting to ${service} authentication...`,
       duration: 2000,
-    })
-  }
+    });
+  };
 
   const inviteTeamMember = () => {
     toast({
       title: "Invite Sent",
       description: "Team member invitation has been sent via email",
       duration: 3000,
-    })
-  }
+    });
+  };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-700 via-gray-900 to-black dark:from-gray-300 dark:via-gray-100 dark:to-white bg-clip-text text-transparent">
           Settings & Configuration
@@ -83,32 +106,43 @@ export default function SettingsPage() {
           <CardHeader>
             <div className="flex items-center space-x-2">
               <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              <CardTitle className="text-gray-900 dark:text-white">General Settings</CardTitle>
+              <CardTitle className="text-gray-900 dark:text-white">
+                General Settings
+              </CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="company-name" className="text-gray-700 dark:text-gray-300">
+              <Label
+                htmlFor="company-name"
+                className="text-gray-700 dark:text-gray-300"
+              >
                 Company Name
               </Label>
               <Input
                 id="company-name"
-                defaultValue="ADmyBRAND Insights"
+                defaultValue="analytics Insights"
                 className="bg-white/70 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="website-url" className="text-gray-700 dark:text-gray-300">
+              <Label
+                htmlFor="website-url"
+                className="text-gray-700 dark:text-gray-300"
+              >
                 Website URL
               </Label>
               <Input
                 id="website-url"
-                defaultValue="https://admybrand.com"
+                defaultValue="https://analytics.com"
                 className="bg-white/70 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="timezone" className="text-gray-700 dark:text-gray-300">
+              <Label
+                htmlFor="timezone"
+                className="text-gray-700 dark:text-gray-300"
+              >
                 Timezone
               </Label>
               <Select defaultValue="utc">
@@ -116,10 +150,18 @@ export default function SettingsPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="utc">UTC (Coordinated Universal Time)</SelectItem>
-                  <SelectItem value="est">EST (Eastern Standard Time)</SelectItem>
-                  <SelectItem value="pst">PST (Pacific Standard Time)</SelectItem>
-                  <SelectItem value="cst">CST (Central Standard Time)</SelectItem>
+                  <SelectItem value="utc">
+                    UTC (Coordinated Universal Time)
+                  </SelectItem>
+                  <SelectItem value="est">
+                    EST (Eastern Standard Time)
+                  </SelectItem>
+                  <SelectItem value="pst">
+                    PST (Pacific Standard Time)
+                  </SelectItem>
+                  <SelectItem value="cst">
+                    CST (Central Standard Time)
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -134,45 +176,74 @@ export default function SettingsPage() {
           <CardHeader>
             <div className="flex items-center space-x-2">
               <Bell className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              <CardTitle className="text-gray-900 dark:text-white">Notification Preferences</CardTitle>
+              <CardTitle className="text-gray-900 dark:text-white">
+                Notification Preferences
+              </CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-gray-700 dark:text-gray-300">Email Notifications</Label>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Receive updates via email</p>
+                <Label className="text-gray-700 dark:text-gray-300">
+                  Email Notifications
+                </Label>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Receive updates via email
+                </p>
               </div>
               <Switch
                 checked={notifications.email}
-                onCheckedChange={(value) => handleNotificationChange("email", value)}
+                onCheckedChange={value =>
+                  handleNotificationChange("email", value)
+                }
               />
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-gray-700 dark:text-gray-300">Push Notifications</Label>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Browser push notifications</p>
+                <Label className="text-gray-700 dark:text-gray-300">
+                  Push Notifications
+                </Label>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Browser push notifications
+                </p>
               </div>
               <Switch
                 checked={notifications.push}
-                onCheckedChange={(value) => handleNotificationChange("push", value)}
+                onCheckedChange={value =>
+                  handleNotificationChange("push", value)
+                }
               />
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-gray-700 dark:text-gray-300">SMS Alerts</Label>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Critical alerts via SMS</p>
+                <Label className="text-gray-700 dark:text-gray-300">
+                  SMS Alerts
+                </Label>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Critical alerts via SMS
+                </p>
               </div>
-              <Switch checked={notifications.sms} onCheckedChange={(value) => handleNotificationChange("sms", value)} />
+              <Switch
+                checked={notifications.sms}
+                onCheckedChange={value =>
+                  handleNotificationChange("sms", value)
+                }
+              />
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <Label className="text-gray-700 dark:text-gray-300">Marketing Updates</Label>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Product news and tips</p>
+                <Label className="text-gray-700 dark:text-gray-300">
+                  Marketing Updates
+                </Label>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Product news and tips
+                </p>
               </div>
               <Switch
                 checked={notifications.marketing}
-                onCheckedChange={(value) => handleNotificationChange("marketing", value)}
+                onCheckedChange={value =>
+                  handleNotificationChange("marketing", value)
+                }
               />
             </div>
           </CardContent>
@@ -183,12 +254,16 @@ export default function SettingsPage() {
           <CardHeader>
             <div className="flex items-center space-x-2">
               <Key className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              <CardTitle className="text-gray-900 dark:text-white">API & Integrations</CardTitle>
+              <CardTitle className="text-gray-900 dark:text-white">
+                API & Integrations
+              </CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label className="text-gray-700 dark:text-gray-300">API Key</Label>
+              <Label className="text-gray-700 dark:text-gray-300">
+                API Key
+              </Label>
               <div className="flex space-x-2">
                 <Input
                   value="ak_live_1234567890abcdef"
@@ -201,7 +276,11 @@ export default function SettingsPage() {
                   onClick={copyApiKey}
                   className="bg-white/70 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10"
                 >
-                  {apiKeyCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  {apiKeyCopied ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
                 </Button>
                 <Button
                   variant="outline"
@@ -215,7 +294,9 @@ export default function SettingsPage() {
             </div>
 
             <div className="space-y-3">
-              <Label className="text-gray-700 dark:text-gray-300">Connected Services</Label>
+              <Label className="text-gray-700 dark:text-gray-300">
+                Connected Services
+              </Label>
 
               <div className="flex items-center justify-between p-3 border border-gray-200 dark:border-white/10 rounded-lg bg-white/50 dark:bg-white/5">
                 <div className="flex items-center space-x-3">
@@ -223,8 +304,12 @@ export default function SettingsPage() {
                     <span className="text-white font-bold text-sm">GA</span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-white">Google Analytics</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Web analytics platform</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      Google Analytics
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Web analytics platform
+                    </p>
                   </div>
                 </div>
                 <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/30">
@@ -238,8 +323,12 @@ export default function SettingsPage() {
                     <span className="text-white font-bold text-sm">S</span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-white">Slack</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Team communication</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      Slack
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Team communication
+                    </p>
                   </div>
                 </div>
                 <Button
@@ -258,8 +347,12 @@ export default function SettingsPage() {
                     <span className="text-white font-bold text-sm">Z</span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-white">Zapier</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Workflow automation</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      Zapier
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Workflow automation
+                    </p>
                   </div>
                 </div>
                 <Button
@@ -289,7 +382,9 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Users className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                <CardTitle className="text-gray-900 dark:text-white">Team Management</CardTitle>
+                <CardTitle className="text-gray-900 dark:text-white">
+                  Team Management
+                </CardTitle>
               </div>
               <Button
                 size="sm"
@@ -303,7 +398,9 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-500/10 rounded-lg border border-blue-200 dark:border-blue-500/20">
-              <span className="text-blue-800 dark:text-blue-400 text-sm font-medium">3 of 10 seats used</span>
+              <span className="text-blue-800 dark:text-blue-400 text-sm font-medium">
+                3 of 10 seats used
+              </span>
               <Badge
                 variant="outline"
                 className="bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-200 dark:border-blue-500/30"
@@ -319,8 +416,12 @@ export default function SettingsPage() {
                     <span className="text-white font-medium text-sm">JD</span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-white">John Doe</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">john@admybrand.com</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      John Doe
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      john@analytics.com
+                    </p>
                   </div>
                 </div>
                 <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30">
@@ -334,8 +435,12 @@ export default function SettingsPage() {
                     <span className="text-white font-medium text-sm">SM</span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-white">Sarah Miller</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">sarah@admybrand.com</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      Sarah Miller
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      sarah@analytics.com
+                    </p>
                   </div>
                 </div>
                 <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/30">
@@ -349,8 +454,12 @@ export default function SettingsPage() {
                     <span className="text-white font-medium text-sm">MJ</span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-white">Mike Johnson</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">mike@admybrand.com</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      Mike Johnson
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      mike@analytics.com
+                    </p>
                   </div>
                 </div>
                 <Badge className="bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-500/20 dark:text-gray-400 dark:border-gray-500/30">
@@ -360,7 +469,9 @@ export default function SettingsPage() {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-gray-700 dark:text-gray-300">Default Role for New Members</Label>
+              <Label className="text-gray-700 dark:text-gray-300">
+                Default Role for New Members
+              </Label>
               <Select defaultValue="viewer">
                 <SelectTrigger className="bg-white/70 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white">
                   <SelectValue />
@@ -380,7 +491,9 @@ export default function SettingsPage() {
           <CardHeader>
             <div className="flex items-center space-x-2">
               <Shield className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              <CardTitle className="text-gray-900 dark:text-white">Security & Privacy</CardTitle>
+              <CardTitle className="text-gray-900 dark:text-white">
+                Security & Privacy
+              </CardTitle>
             </div>
           </CardHeader>
           <CardContent>
@@ -388,22 +501,34 @@ export default function SettingsPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-gray-700 dark:text-gray-300">Two-Factor Authentication</Label>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Add an extra layer of security</p>
+                    <Label className="text-gray-700 dark:text-gray-300">
+                      Two-Factor Authentication
+                    </Label>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Add an extra layer of security
+                    </p>
                   </div>
                   <Switch defaultChecked />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-gray-700 dark:text-gray-300">Session Timeout</Label>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Auto-logout after inactivity</p>
+                    <Label className="text-gray-700 dark:text-gray-300">
+                      Session Timeout
+                    </Label>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Auto-logout after inactivity
+                    </p>
                   </div>
                   <Switch defaultChecked />
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-gray-700 dark:text-gray-300">Login Notifications</Label>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Alert on new device login</p>
+                    <Label className="text-gray-700 dark:text-gray-300">
+                      Login Notifications
+                    </Label>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Alert on new device login
+                    </p>
                   </div>
                   <Switch defaultChecked />
                 </div>
@@ -411,8 +536,12 @@ export default function SettingsPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-gray-700 dark:text-gray-300">Data Encryption</Label>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Encrypt sensitive data</p>
+                    <Label className="text-gray-700 dark:text-gray-300">
+                      Data Encryption
+                    </Label>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Encrypt sensitive data
+                    </p>
                   </div>
                   <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/30">
                     Enabled
@@ -420,8 +549,12 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-gray-700 dark:text-gray-300">Audit Logging</Label>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Track user activities</p>
+                    <Label className="text-gray-700 dark:text-gray-300">
+                      Audit Logging
+                    </Label>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Track user activities
+                    </p>
                   </div>
                   <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/30">
                     Active
@@ -429,8 +562,12 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-gray-700 dark:text-gray-300">GDPR Compliance</Label>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Data protection compliance</p>
+                    <Label className="text-gray-700 dark:text-gray-300">
+                      GDPR Compliance
+                    </Label>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Data protection compliance
+                    </p>
                   </div>
                   <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30">
                     Compliant
@@ -442,5 +579,5 @@ export default function SettingsPage() {
         </Card>
       </div>
     </motion.div>
-  )
+  );
 }

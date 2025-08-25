@@ -11,5 +11,5 @@ export default function RootLayout({
 }
 
 export const metadata = {
-  generator: "admybrand_analyticDB",
+  generator: "analytics_analyticDB",
 };

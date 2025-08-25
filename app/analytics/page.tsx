@@ -1,76 +1,78 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useMemo } from "react"
-import { motion } from "framer-motion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { LineChart } from "@/components/charts/line-chart"
-import { AreaChart } from "@/components/charts/area-chart"
-import { BarChart } from "@/components/charts/bar-chart"
-import { Button } from "@/components/ui/button"
-import { Calendar, Filter, Download, CalendarDays, X } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-import { Badge } from "@/components/ui/badge"
-import { AnalyticsPageSkeleton } from "@/components/skeletons/page-skeleton"
+import { useState, useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LineChart } from "@/components/charts/line-chart";
+import { AreaChart } from "@/components/charts/area-chart";
+import { BarChart } from "@/components/charts/bar-chart";
+import { Button } from "@/components/ui/button";
+import { Calendar, Filter, Download, CalendarDays, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { AnalyticsPageSkeleton } from "@/components/skeletons/page-skeleton";
 
 interface DateRange {
-  from: Date
-  to: Date
-  label: string
+  from: Date;
+  to: Date;
+  label: string;
 }
 
 interface AnalyticsData {
   summary: {
-    totalRevenue: number
-    totalConversions: number
-    conversionRate: number
-    averageOrderValue: number
-    returnOnAdSpend: number
-  }
+    totalRevenue: number;
+    totalConversions: number;
+    conversionRate: number;
+    averageOrderValue: number;
+    returnOnAdSpend: number;
+  };
   dailyMetrics: Array<{
-    date: string
-    revenue: number
-    conversions: number
-    clicks: number
-    impressions: number
-    ctr: number
-    cpc: number
-  }>
+    date: string;
+    revenue: number;
+    conversions: number;
+    clicks: number;
+    impressions: number;
+    ctr: number;
+    cpc: number;
+  }>;
   topCampaigns: Array<{
-    name: string
-    revenue: string
-    roi: string
-    impressions: number
-    clicks: number
-  }>
+    name: string;
+    revenue: string;
+    roi: string;
+    impressions: number;
+    clicks: number;
+  }>;
   topContent: Array<{
-    title: string
-    change: string
-    type: string
-  }>
+    title: string;
+    change: string;
+    type: string;
+  }>;
   audienceInsights: Array<{
-    metric: string
-    value: string
-    change: string
-  }>
+    metric: string;
+    value: string;
+    change: string;
+  }>;
   conversionFunnel: Array<{
-    stage: string
-    value: string
-    count: number
-  }>
+    stage: string;
+    value: string;
+    count: number;
+  }>;
 }
 
 export default function AnalyticsPage() {
-  const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState(true)
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>({
     from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
     to: new Date(),
     label: "Last 30 Days",
-  })
-  const [showDatePicker, setShowDatePicker] = useState(false)
-  const [activeFilters, setActiveFilters] = useState<string[]>([])
-  const [isExporting, setIsExporting] = useState(false)
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
+  });
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(
+    null
+  );
 
   // Predefined date ranges
   const dateRanges: DateRange[] = [
@@ -104,7 +106,7 @@ export default function AnalyticsPage() {
       to: new Date(),
       label: "This Year",
     },
-  ]
+  ];
 
   // Available filters
   const availableFilters = [
@@ -114,19 +116,22 @@ export default function AnalyticsPage() {
     "Paid Campaigns",
     "New Users",
     "Returning Users",
-  ]
+  ];
 
   // Generate mock data based on date range
   const generateAnalyticsData = (dateRange: DateRange): AnalyticsData => {
-    const daysDiff = Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24))
+    const daysDiff = Math.ceil(
+      (dateRange.to.getTime() - dateRange.from.getTime()) /
+        (1000 * 60 * 60 * 24)
+    );
 
     // Generate daily metrics for the selected period
     const dailyMetrics = Array.from({ length: daysDiff }, (_, i) => {
-      const date = new Date(dateRange.from.getTime() + i * 24 * 60 * 60 * 1000)
-      const baseRevenue = Math.floor(Math.random() * 3000) + 2000
-      const baseConversions = Math.floor(Math.random() * 80) + 40
-      const baseClicks = Math.floor(Math.random() * 1500) + 800
-      const baseImpressions = Math.floor(Math.random() * 30000) + 20000
+      const date = new Date(dateRange.from.getTime() + i * 24 * 60 * 60 * 1000);
+      const baseRevenue = Math.floor(Math.random() * 3000) + 2000;
+      const baseConversions = Math.floor(Math.random() * 80) + 40;
+      const baseClicks = Math.floor(Math.random() * 1500) + 800;
+      const baseImpressions = Math.floor(Math.random() * 30000) + 20000;
 
       return {
         date: date.toISOString().split("T")[0],
@@ -136,14 +141,23 @@ export default function AnalyticsPage() {
         impressions: baseImpressions,
         ctr: +((baseClicks / baseImpressions) * 100).toFixed(2),
         cpc: +(baseRevenue / baseClicks).toFixed(2),
-      }
-    })
+      };
+    });
 
     // Calculate summary metrics
-    const totalRevenue = dailyMetrics.reduce((sum, day) => sum + day.revenue, 0)
-    const totalConversions = dailyMetrics.reduce((sum, day) => sum + day.conversions, 0)
-    const totalClicks = dailyMetrics.reduce((sum, day) => sum + day.clicks, 0)
-    const totalImpressions = dailyMetrics.reduce((sum, day) => sum + day.impressions, 0)
+    const totalRevenue = dailyMetrics.reduce(
+      (sum, day) => sum + day.revenue,
+      0
+    );
+    const totalConversions = dailyMetrics.reduce(
+      (sum, day) => sum + day.conversions,
+      0
+    );
+    const totalClicks = dailyMetrics.reduce((sum, day) => sum + day.clicks, 0);
+    const totalImpressions = dailyMetrics.reduce(
+      (sum, day) => sum + day.impressions,
+      0
+    );
 
     return {
       summary: {
@@ -151,7 +165,9 @@ export default function AnalyticsPage() {
         totalConversions,
         conversionRate: +((totalConversions / totalClicks) * 100).toFixed(2),
         averageOrderValue: +(totalRevenue / totalConversions).toFixed(2),
-        returnOnAdSpend: +((totalRevenue / (totalRevenue * 0.3)) * 100).toFixed(1),
+        returnOnAdSpend: +((totalRevenue / (totalRevenue * 0.3)) * 100).toFixed(
+          1
+        ),
       },
       dailyMetrics,
       topCampaigns: [
@@ -192,93 +208,101 @@ export default function AnalyticsPage() {
         { stage: "Leads", value: "2,500", count: 2500 },
         { stage: "Customers", value: "750", count: 750 },
       ],
-    }
-  }
+    };
+  };
 
   // Load data when date range changes
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     const timer = setTimeout(() => {
-      const data = generateAnalyticsData(selectedDateRange)
-      setAnalyticsData(data)
-      setIsLoading(false)
-    }, 1500)
+      const data = generateAnalyticsData(selectedDateRange);
+      setAnalyticsData(data);
+      setIsLoading(false);
+    }, 1500);
 
-    return () => clearTimeout(timer)
-  }, [selectedDateRange])
+    return () => clearTimeout(timer);
+  }, [selectedDateRange]);
 
   // Filter data based on active filters
   const filteredData = useMemo(() => {
-    if (!analyticsData || activeFilters.length === 0) return analyticsData
+    if (!analyticsData || activeFilters.length === 0) return analyticsData;
 
     // Apply filters to the data (simplified logic for demo)
-    const filtered = { ...analyticsData }
+    const filtered = { ...analyticsData };
 
     if (activeFilters.includes("High Converting")) {
-      filtered.dailyMetrics = filtered.dailyMetrics.filter((day) => day.conversions > 60)
+      filtered.dailyMetrics = filtered.dailyMetrics.filter(
+        day => day.conversions > 60
+      );
     }
 
     if (activeFilters.includes("Mobile Traffic")) {
       // Simulate mobile traffic filter by reducing desktop metrics
-      filtered.summary.totalRevenue = Math.floor(filtered.summary.totalRevenue * 0.68)
-      filtered.summary.totalConversions = Math.floor(filtered.summary.totalConversions * 0.68)
+      filtered.summary.totalRevenue = Math.floor(
+        filtered.summary.totalRevenue * 0.68
+      );
+      filtered.summary.totalConversions = Math.floor(
+        filtered.summary.totalConversions * 0.68
+      );
     }
 
-    return filtered
-  }, [analyticsData, activeFilters])
+    return filtered;
+  }, [analyticsData, activeFilters]);
 
   const handleDateRangeSelect = (range: DateRange) => {
-    setSelectedDateRange(range)
-    setShowDatePicker(false)
+    setSelectedDateRange(range);
+    setShowDatePicker(false);
     toast({
       title: "Date Range Updated",
       description: `Analytics updated for ${range.label}`,
       duration: 2000,
-    })
-  }
+    });
+  };
 
   const handleFilterToggle = (filter: string) => {
-    setActiveFilters((prev) => (prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter]))
-  }
+    setActiveFilters(prev =>
+      prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]
+    );
+  };
 
   const clearAllFilters = () => {
-    setActiveFilters([])
+    setActiveFilters([]);
     toast({
       title: "Filters Cleared",
       description: "All filters have been removed",
       duration: 2000,
-    })
-  }
+    });
+  };
 
   const exportData = async (format: "CSV" | "PDF" | "JSON") => {
-    if (!filteredData) return
+    if (!filteredData) return;
 
-    setIsExporting(true)
+    setIsExporting(true);
 
     try {
       // Simulate export processing
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-      let blob: Blob
-      let filename: string
+      let blob: Blob;
+      let filename: string;
       const timestamp = new Date().toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
         day: "numeric",
-      })
+      });
 
       switch (format) {
         case "CSV":
-          const csvContent = generateCSV(filteredData, selectedDateRange)
-          blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
-          filename = `Analytics_Report_${timestamp}.csv`
-          break
+          const csvContent = generateCSV(filteredData, selectedDateRange);
+          blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+          filename = `Analytics_Report_${timestamp}.csv`;
+          break;
 
         case "PDF":
-          const htmlContent = generatePDF(filteredData, selectedDateRange)
-          blob = new Blob([htmlContent], { type: "text/html" })
-          filename = `Analytics_Report_${timestamp}.pdf`
-          break
+          const htmlContent = generatePDF(filteredData, selectedDateRange);
+          blob = new Blob([htmlContent], { type: "text/html" });
+          filename = `Analytics_Report_${timestamp}.pdf`;
+          break;
 
         case "JSON":
           const jsonContent = JSON.stringify(
@@ -292,81 +316,83 @@ export default function AnalyticsPage() {
               data: filteredData,
             },
             null,
-            2,
-          )
-          blob = new Blob([jsonContent], { type: "application/json;charset=utf-8;" })
-          filename = `Analytics_Report_${timestamp}.json`
-          break
+            2
+          );
+          blob = new Blob([jsonContent], {
+            type: "application/json;charset=utf-8;",
+          });
+          filename = `Analytics_Report_${timestamp}.json`;
+          break;
 
         default:
-          throw new Error("Unsupported format")
+          throw new Error("Unsupported format");
       }
 
       // Download the file
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = filename
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      window.URL.revokeObjectURL(url)
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
 
       toast({
         title: "Export Successful",
         description: `Analytics report exported as ${format}`,
         duration: 3000,
-      })
+      });
     } catch (error) {
       toast({
         title: "Export Failed",
         description: "Please try again later.",
         variant: "destructive",
         duration: 3000,
-      })
+      });
     } finally {
-      setIsExporting(false)
+      setIsExporting(false);
     }
-  }
+  };
 
   const generateCSV = (data: AnalyticsData, dateRange: DateRange): string => {
-    let csv = `"Analytics Report"\n`
-    csv += `"Generated","${new Date().toLocaleDateString()}"\n`
-    csv += `"Date Range","${dateRange.label}"\n`
-    csv += `"From","${dateRange.from.toLocaleDateString()}"\n`
-    csv += `"To","${dateRange.to.toLocaleDateString()}"\n`
+    let csv = `"Analytics Report"\n`;
+    csv += `"Generated","${new Date().toLocaleDateString()}"\n`;
+    csv += `"Date Range","${dateRange.label}"\n`;
+    csv += `"From","${dateRange.from.toLocaleDateString()}"\n`;
+    csv += `"To","${dateRange.to.toLocaleDateString()}"\n`;
     if (activeFilters.length > 0) {
-      csv += `"Active Filters","${activeFilters.join(", ")}"\n`
+      csv += `"Active Filters","${activeFilters.join(", ")}"\n`;
     }
-    csv += `\n`
+    csv += `\n`;
 
     // Summary metrics
-    csv += `"SUMMARY METRICS"\n`
-    csv += `"Metric","Value"\n`
-    csv += `"Total Revenue","$${data.summary.totalRevenue.toLocaleString()}"\n`
-    csv += `"Total Conversions","${data.summary.totalConversions.toLocaleString()}"\n`
-    csv += `"Conversion Rate","${data.summary.conversionRate}%"\n`
-    csv += `"Average Order Value","$${data.summary.averageOrderValue}"\n`
-    csv += `"Return on Ad Spend","${data.summary.returnOnAdSpend}x"\n`
-    csv += `\n`
+    csv += `"SUMMARY METRICS"\n`;
+    csv += `"Metric","Value"\n`;
+    csv += `"Total Revenue","$${data.summary.totalRevenue.toLocaleString()}"\n`;
+    csv += `"Total Conversions","${data.summary.totalConversions.toLocaleString()}"\n`;
+    csv += `"Conversion Rate","${data.summary.conversionRate}%"\n`;
+    csv += `"Average Order Value","$${data.summary.averageOrderValue}"\n`;
+    csv += `"Return on Ad Spend","${data.summary.returnOnAdSpend}x"\n`;
+    csv += `\n`;
 
     // Daily metrics
-    csv += `"DAILY PERFORMANCE"\n`
-    csv += `"Date","Revenue","Conversions","Clicks","Impressions","CTR","CPC"\n`
-    data.dailyMetrics.forEach((day) => {
-      csv += `"${day.date}","${day.revenue}","${day.conversions}","${day.clicks}","${day.impressions}","${day.ctr}%","$${day.cpc}"\n`
-    })
-    csv += `\n`
+    csv += `"DAILY PERFORMANCE"\n`;
+    csv += `"Date","Revenue","Conversions","Clicks","Impressions","CTR","CPC"\n`;
+    data.dailyMetrics.forEach(day => {
+      csv += `"${day.date}","${day.revenue}","${day.conversions}","${day.clicks}","${day.impressions}","${day.ctr}%","$${day.cpc}"\n`;
+    });
+    csv += `\n`;
 
     // Top campaigns
-    csv += `"TOP CAMPAIGNS"\n`
-    csv += `"Campaign","Revenue","ROI","Impressions","Clicks"\n`
-    data.topCampaigns.forEach((campaign) => {
-      csv += `"${campaign.name}","${campaign.revenue}","${campaign.roi}","${campaign.impressions}","${campaign.clicks}"\n`
-    })
+    csv += `"TOP CAMPAIGNS"\n`;
+    csv += `"Campaign","Revenue","ROI","Impressions","Clicks"\n`;
+    data.topCampaigns.forEach(campaign => {
+      csv += `"${campaign.name}","${campaign.revenue}","${campaign.roi}","${campaign.impressions}","${campaign.clicks}"\n`;
+    });
 
-    return csv
-  }
+    return csv;
+  };
 
   const generatePDF = (data: AnalyticsData, dateRange: DateRange): string => {
     return `
@@ -466,10 +492,19 @@ export default function AnalyticsPage() {
         
         <div class="date-info">
           <h3>Report Details</h3>
-          <p><strong>Generated:</strong> ${new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+          <p><strong>Generated:</strong> ${new Date().toLocaleDateString(
+            "en-US",
+            { weekday: "long", year: "numeric", month: "long", day: "numeric" }
+          )}</p>
           <p><strong>Date Range:</strong> ${dateRange.label}</p>
           <p><strong>Period:</strong> ${dateRange.from.toLocaleDateString()} - ${dateRange.to.toLocaleDateString()}</p>
-          ${activeFilters.length > 0 ? `<div class="filters"><strong>Active Filters:</strong> ${activeFilters.join(", ")}</div>` : ""}
+          ${
+            activeFilters.length > 0
+              ? `<div class="filters"><strong>Active Filters:</strong> ${activeFilters.join(
+                  ", "
+                )}</div>`
+              : ""
+          }
         </div>
         
         <div class="section">
@@ -509,7 +544,7 @@ export default function AnalyticsPage() {
             <tbody>
               ${data.topCampaigns
                 .map(
-                  (campaign) => `
+                  campaign => `
                 <tr>
                   <td>${campaign.name}</td>
                   <td>${campaign.revenue}</td>
@@ -517,7 +552,7 @@ export default function AnalyticsPage() {
                   <td>${campaign.impressions.toLocaleString()}</td>
                   <td>${campaign.clicks.toLocaleString()}</td>
                 </tr>
-              `,
+              `
                 )
                 .join("")}
             </tbody>
@@ -525,20 +560,24 @@ export default function AnalyticsPage() {
         </div>
         
         <div style="margin-top: 60px; text-align: center; color: #64748b; font-size: 12px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
-          <p><strong>ADmyBRAND Analytics Dashboard</strong></p>
+          <p><strong>analytics Analytics Dashboard</strong></p>
           <p>This report contains confidential business information • Generated automatically</p>
         </div>
       </body>
     </html>
-    `
-  }
+    `;
+  };
 
   if (isLoading) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
         <AnalyticsPageSkeleton />
       </motion.div>
-    )
+    );
   }
 
   if (!filteredData) {
@@ -546,17 +585,22 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
       </div>
-    )
+    );
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500 bg-clip-text text-transparent">
           Advanced Analytics
         </h1>
         <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm sm:text-base">
-          Deep dive into your marketing data with advanced analytics and insights
+          Deep dive into your marketing data with advanced analytics and
+          insights
         </p>
       </div>
 
@@ -580,7 +624,7 @@ export default function AnalyticsPage() {
               className="absolute top-full left-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 min-w-[200px]"
             >
               <div className="p-2">
-                {dateRanges.map((range) => (
+                {dateRanges.map(range => (
                   <button
                     key={range.label}
                     onClick={() => handleDateRangeSelect(range)}
@@ -656,7 +700,7 @@ export default function AnalyticsPage() {
 
       {/* Filter Tags */}
       <div className="flex flex-wrap gap-2 mb-6">
-        {availableFilters.map((filter) => (
+        {availableFilters.map(filter => (
           <Badge
             key={filter}
             variant={activeFilters.includes(filter) ? "default" : "outline"}
@@ -693,13 +737,19 @@ export default function AnalyticsPage() {
                 Showing data for: {selectedDateRange.label}
               </span>
               <span className="text-blue-600 dark:text-blue-400 text-sm">
-                ({selectedDateRange.from.toLocaleDateString()} - {selectedDateRange.to.toLocaleDateString()})
+                ({selectedDateRange.from.toLocaleDateString()} -{" "}
+                {selectedDateRange.to.toLocaleDateString()})
               </span>
             </div>
             {activeFilters.length > 0 && (
               <div className="flex items-center space-x-2">
-                <span className="text-blue-600 dark:text-blue-400 text-sm">Filters active:</span>
-                <Badge variant="secondary" className="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200">
+                <span className="text-blue-600 dark:text-blue-400 text-sm">
+                  Filters active:
+                </span>
+                <Badge
+                  variant="secondary"
+                  className="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200"
+                >
                   {activeFilters.length}
                 </Badge>
               </div>
@@ -715,7 +765,9 @@ export default function AnalyticsPage() {
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               ${filteredData.summary.totalRevenue.toLocaleString()}
             </div>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">Total Revenue</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Total Revenue
+            </p>
           </CardContent>
         </Card>
         <Card className="bg-white/70 dark:bg-black/20 backdrop-blur-xl border-gray-300 dark:border-white/10 shadow-lg dark:shadow-none">
@@ -723,7 +775,9 @@ export default function AnalyticsPage() {
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               {filteredData.summary.totalConversions.toLocaleString()}
             </div>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">Total Conversions</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Total Conversions
+            </p>
           </CardContent>
         </Card>
         <Card className="bg-white/70 dark:bg-black/20 backdrop-blur-xl border-gray-300 dark:border-white/10 shadow-lg dark:shadow-none">
@@ -731,7 +785,9 @@ export default function AnalyticsPage() {
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               {filteredData.summary.conversionRate}%
             </div>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">Conversion Rate</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Conversion Rate
+            </p>
           </CardContent>
         </Card>
         <Card className="bg-white/70 dark:bg-black/20 backdrop-blur-xl border-gray-300 dark:border-white/10 shadow-lg dark:shadow-none">
@@ -739,7 +795,9 @@ export default function AnalyticsPage() {
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               ${filteredData.summary.averageOrderValue}
             </div>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">Avg Order Value</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Avg Order Value
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -748,7 +806,9 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <Card className="bg-white/70 dark:bg-black/20 backdrop-blur-xl border-gray-300 dark:border-white/10 shadow-lg dark:shadow-none">
           <CardHeader>
-            <CardTitle className="text-gray-900 dark:text-white">Traffic Trends</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-white">
+              Traffic Trends
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <LineChart />
@@ -757,7 +817,9 @@ export default function AnalyticsPage() {
 
         <Card className="bg-white/70 dark:bg-black/20 backdrop-blur-xl border-gray-300 dark:border-white/10 shadow-lg dark:shadow-none">
           <CardHeader>
-            <CardTitle className="text-gray-900 dark:text-white">Engagement Patterns</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-white">
+              Engagement Patterns
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <AreaChart />
@@ -766,7 +828,9 @@ export default function AnalyticsPage() {
 
         <Card className="lg:col-span-2 bg-white/70 dark:bg-black/20 backdrop-blur-xl border-gray-300 dark:border-white/10 shadow-lg dark:shadow-none">
           <CardHeader>
-            <CardTitle className="text-gray-900 dark:text-white">Channel Performance Analysis</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-white">
+              Channel Performance Analysis
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <BarChart />
@@ -778,17 +842,25 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-white/70 dark:bg-black/20 backdrop-blur-xl border-gray-300 dark:border-white/10 shadow-lg dark:shadow-none">
           <CardHeader>
-            <CardTitle className="text-gray-900 dark:text-white text-lg">Top Performing Content</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-white text-lg">
+              Top Performing Content
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {filteredData.topContent.map((content, index) => (
                 <div key={index} className="flex justify-between items-center">
                   <div>
-                    <span className="text-gray-700 dark:text-gray-300">{content.title}</span>
-                    <p className="text-xs text-gray-500 dark:text-gray-500">{content.type}</p>
+                    <span className="text-gray-700 dark:text-gray-300">
+                      {content.title}
+                    </span>
+                    <p className="text-xs text-gray-500 dark:text-gray-500">
+                      {content.type}
+                    </p>
                   </div>
-                  <span className="text-green-600 dark:text-green-400 font-semibold">{content.change}</span>
+                  <span className="text-green-600 dark:text-green-400 font-semibold">
+                    {content.change}
+                  </span>
                 </div>
               ))}
             </div>
@@ -797,16 +869,24 @@ export default function AnalyticsPage() {
 
         <Card className="bg-white/70 dark:bg-black/20 backdrop-blur-xl border-gray-300 dark:border-white/10 shadow-lg dark:shadow-none">
           <CardHeader>
-            <CardTitle className="text-gray-900 dark:text-white text-lg">Audience Insights</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-white text-lg">
+              Audience Insights
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {filteredData.audienceInsights.map((insight, index) => (
                 <div key={index} className="flex justify-between items-center">
-                  <span className="text-gray-700 dark:text-gray-300">{insight.metric}</span>
+                  <span className="text-gray-700 dark:text-gray-300">
+                    {insight.metric}
+                  </span>
                   <div className="text-right">
-                    <div className="font-semibold text-gray-900 dark:text-white">{insight.value}</div>
-                    <div className="text-xs text-green-600 dark:text-green-400">{insight.change}</div>
+                    <div className="font-semibold text-gray-900 dark:text-white">
+                      {insight.value}
+                    </div>
+                    <div className="text-xs text-green-600 dark:text-green-400">
+                      {insight.change}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -816,14 +896,20 @@ export default function AnalyticsPage() {
 
         <Card className="bg-white/70 dark:bg-black/20 backdrop-blur-xl border-gray-300 dark:border-white/10 shadow-lg dark:shadow-none">
           <CardHeader>
-            <CardTitle className="text-gray-900 dark:text-white text-lg">Conversion Funnel</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-white text-lg">
+              Conversion Funnel
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {filteredData.conversionFunnel.map((stage, index) => (
                 <div key={index} className="flex justify-between items-center">
-                  <span className="text-gray-700 dark:text-gray-300">{stage.stage}</span>
-                  <span className="text-gray-900 dark:text-white font-semibold">{stage.value}</span>
+                  <span className="text-gray-700 dark:text-gray-300">
+                    {stage.stage}
+                  </span>
+                  <span className="text-gray-900 dark:text-white font-semibold">
+                    {stage.value}
+                  </span>
                 </div>
               ))}
             </div>
@@ -831,5 +917,5 @@ export default function AnalyticsPage() {
         </Card>
       </div>
     </motion.div>
-  )
+  );
 }
